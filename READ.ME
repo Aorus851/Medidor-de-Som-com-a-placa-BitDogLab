@@ -1,0 +1,47 @@
+Este código implementa um medidor de som utilizando a placa BitDogLab com microcontrolador RP2040. Ele capta o nível de som através de um microfone analógico, processa a informação utilizando o ADC (Conversor Analógico-Digital) do RP2040 e exibe a intensidade do som em uma matriz de LEDs.
+
+Ao iniciar a execução, o código configura os periféricos essenciais para o funcionamento do medidor de som:
+
+A função init_adc() inicializa o ADC do RP2040 e configura o pino GPIO26 (ADC0) para receber sinais analógicos do microfone.
+A leitura do microfone retorna um valor entre 0 e 4095 (resolução de 12 bits do ADC).
+A função init_led_matrix() configura 8 pinos GPIO (do GPIO2 ao GPIO9) como saídas para acionar os LEDs.
+Cada LED da matriz representa um nível de intensidade sonora.
+
+Após a inicialização, o código entra em um loop infinito, onde realiza as seguintes operações:
+
+- Leitura do Nível de Som
+
+A função read_sound_level() lê a entrada do ADC e retorna um valor entre 0 e 4095, representando a intensidade do som captado pelo microfone.
+
+- Exibição do Som na Matriz de LEDs
+
+A função set_led_matrix(sound_level) acende os LEDs proporcionalmente à intensidade do som.
+O número de LEDs acesos é calculado com:
+c
+Copiar
+Editar
+int leds_to_light = (sound_level * LED_MATRIX_SIZE) / 4096;
+Isso normaliza os valores do ADC para um intervalo de 0 a 8 LEDs.
+
+- Exibição dos Dados via Serial (UART)
+
+O valor do ADC é exibido no terminal via printf(), permitindo monitoramento pelo USB/Serial.
+
+- Pequena Pausa
+
+A cada 500ms, o código faz uma pausa (sleep_ms(500)) antes de repetir a leitura.
+
+- Como os LEDs Indicadores Funcionam
+A matriz de LEDs funciona como um VU Meter, onde:
+
+Nenhum LED aceso → Som fraco ou silêncio.
+Poucos LEDs acesos → Som baixo.
+Todos os LEDs acesos → Som alto.
+
+-Resumindo o projeto:
+
+Inicializa o ADC e os pinos GPIO da matriz de LEDs.
+Lê continuamente o nível de som a partir do microfone.
+Calcula quantos LEDs devem acender com base no volume captado.
+Exibe os valores via comunicação serial (pode ser visualizado pelo monitor serial no PC).
+Repete o processo a cada 500ms.
